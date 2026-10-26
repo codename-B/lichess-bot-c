@@ -1,0 +1,260 @@
+# Copy to config.yml; set engine.dir and engine.name.
+# Token precedence: --token-file > LICHESS_BOT_TOKEN > token.
+
+token: "xxxxxxxxxxxxxxxxxxxxxx"    # OAuth token.
+url: "https://lichess.org/"
+
+engine:
+  dir: "./engines/"                # Executable directory; absolute or relative to the bot's working directory.
+  name: "engine_name"              # Executable name.
+  debug: False                     # Log engine startup communication.
+# interpreter: "java"
+# interpreter_options:
+#   - "-jar"
+  working_dir: ""                  # Engine working directory; blank uses the current directory.
+                                   # Relative engine paths resolve here; absolute paths are unchanged.
+  protocol: "uci"                  # "uci", "xboard", "homemade".
+  ponder: true                     # Think on opponent's time.
+
+  polyglot:
+    enabled: false
+    book:
+      standard:
+        - engines/book1.bin
+        - engines/book2.bin
+#     atomic:
+#       - engines/atomicbook1.bin
+#       - engines/atomicbook2.bin
+#     Also: chess960, giveaway (antichess), crazyhouse, horde, kingofthehill, racingkings, 3check.
+    min_weight: 1                  # Minimum weight for uniform_random and best_move; ignored by weighted_random.
+    selection: "weighted_random"   # "weighted_random", "uniform_random", "best_move".
+    max_depth: 20                  # Book depth in full moves.
+    normalization: "none"          # "none": raw weight; "sum"/"max": percentage of total/maximum.
+
+  draw_or_resign:
+    resign_enabled: false
+    resign_score: -1000            # Resign at or below this score (cp).
+    resign_for_egtb_minus_two: true # Resign at WDL -2.
+    resign_moves: 3                # Consecutive qualifying moves.
+    offer_draw_enabled: true       # Offer/accept draws.
+    offer_draw_score: 0            # Draw when absolute score is at most this value (cp).
+    offer_draw_for_egtb_zero: true # Draw at WDL 0.
+    offer_draw_moves: 10           # Consecutive qualifying moves.
+    offer_draw_pieces: 10          # Maximum piece count for draw offers.
+
+  online_moves:
+    max_out_of_book_moves: 10      # Stop online books after this many misses; excludes tablebases.
+    max_retries: 2                 # Online move retries.
+    # max_depth: 10                # Book depth in full moves. Default: unlimited.
+    chessdb_book:
+      enabled: false
+      min_time: 20                 # Minimum remaining time (seconds).
+      max_time: 10800              # Maximum starting time (seconds).
+      move_quality: "good"         # "all", "good", "best".
+      min_depth: 20                # Used with move_quality: "best".
+    lichess_cloud_analysis:
+      enabled: false
+      min_time: 20                 # Minimum remaining time (seconds).
+      max_time: 10800              # Maximum starting time (seconds).
+      move_quality: "best"         # "good", "best".
+      max_score_difference: 50     # Maximum loss from best score (cp); move_quality: "good" only.
+      min_depth: 20
+      min_knodes: 0
+    lichess_opening_explorer:
+      enabled: false
+      min_time: 20
+      max_time: 10800              # Maximum starting time (seconds).
+      source: "masters"            # "lichess", "masters", "player".
+      player_name: ""              # Username for source: "player"; blank uses the bot.
+      sort: "winrate"              # "winrate", "games_played".
+      min_games: 10                # Minimum games per move.
+    online_egtb:
+      enabled: false
+      min_time: 20                 # Minimum remaining time (seconds).
+      max_time: 10800              # Maximum starting time (seconds).
+      max_pieces: 8                # Maximum piece count.
+      source: "lichess"            # "lichess", "chessdb".
+      move_quality: "best"         # "best", "suggest"; suggest restricts search to equal-WDL moves, playing a sole candidate immediately.
+
+  lichess_bot_tbs:                 # Tablebases read by the bot.
+    syzygy:
+      enabled: false
+      paths:
+        - "engines/syzygy"
+      max_pieces: 7                # Maximum piece count.
+      move_quality: "best"         # "best", "suggest".
+    gaviota:
+      enabled: false
+      paths:
+        - "engines/gaviota"
+      max_pieces: 5
+      min_dtm_to_consider_as_wdl_1: 120 # DTM threshold for WDL ±1; 100 disables.
+      move_quality: "best"         # "best", "suggest".
+
+# engine_options:                  # Engine command-line arguments.
+#   cpuct: 3.1
+
+  homemade_options:
+#   Hash: 256
+
+  uci_options:
+    Move Overhead: 100             # Milliseconds; increase if the engine loses on time.
+    Threads: 4                     # CPU threads.
+    Hash: 512                      # Memory (MB).
+    SyzygyPath: "./syzygy/"        # Engine-probed tablebases.
+    UCI_ShowWDL: true              # Report win/draw/loss probabilities.
+#   go_commands:                   # Search limits.
+#     nodes: 1                     # Node limit.
+#     depth: 5                     # Depth in plies.
+#     movetime: 1000               # Search time (ms).
+
+# xboard_options:
+#   cores: "4"
+#   memory: "4096"
+#   egtpath:                       # Engine tablebase directories.
+#     gaviota: "Gaviota path"
+#     nalimov: "Nalimov Path"
+#     scorpio: "Scorpio Path"
+#     syzygy: "Syzygy Path"
+#   go_commands:                   # Search limits.
+#     depth: 5                     # Depth in plies.
+#     Avoid movetime/nodes with XBoard; they can disrupt time management.
+
+  silence_stderr: false            # Suppress engine stderr.
+
+abort_time: 30                     # Abort inactive games after this many seconds.
+fake_think_time: false             # Delay moves to simulate thinking.
+rate_limiting_delay: 0             # Delay after moves (ms) to avoid rate limits.
+move_overhead: 2000                # Milliseconds; increase if the bot loses on time.
+max_takebacks_accepted: 0          # Takebacks allowed per game.
+quit_after_all_games_finish: false # Wait for active games on Ctrl-C.
+
+correspondence:
+  move_time: 60                    # Search time (seconds).
+  checkin_period: 300              # Seconds between disconnected-game checks.
+  disconnect_time: 150             # Seconds before disconnecting.
+  ponder: false                    # Ponder while connected.
+
+challenge:                         # Incoming challenges.
+  concurrency: 1                   # Simultaneous games.
+  games_reserved_for_humans: 0     # Reserve this many slots for humans.
+  sort_by: "best"                  # "best", "first".
+  preference: "none"               # "none", "human", "bot".
+  accept_bot: true                 # Accept bot challenges.
+  only_bot: false                  # Accept only bots.
+  max_increment: 20                # Maximum increment (seconds).
+  min_increment: 0                 # Minimum increment (seconds).
+  max_base: 1800                   # Maximum initial time (seconds).
+  min_base: 0                      # Minimum initial time (seconds).
+  max_days: 14                     # Maximum days per move; .inf allows unlimited games.
+  min_days: 1                      # Minimum days per move.
+  variants:                        # Accepted variants: https://lichess.org/variant
+    - standard
+#   - fromPosition
+#   - antichess
+#   - atomic
+#   - chess960
+#   - crazyhouse
+#   - horde
+#   - kingOfTheHill
+#   - racingKings
+#   - threeCheck
+  time_controls:                   # Accepted speeds; bots cannot play ultraBullet.
+    - bullet
+    - blitz
+    - rapid
+    - classical
+#   - correspondence
+  modes:
+    - casual                       # Unrated games.
+    - rated                        # Disable if the engine doesn't try to win.
+# block_list:                      # Blocked users.
+#   - user1
+#   - user2
+# online_block_list:               # URLs of blocklists; one username per line.
+#   - example.com/blocklist
+# allow_list:                      # Accept only these users; empty allows anyone.
+#   - user3
+#   - user4
+# recent_bot_challenge_age: 60     # Recent-challenge window (seconds).
+# max_recent_bot_challenges: 2     # Recent challenges allowed per bot.
+# min_rating: 0                   # Minimum opponent rating.
+# max_rating: 4000                # Maximum opponent rating.
+# rating_difference: 300          # Maximum rating difference; overrides min_rating/max_rating.
+  bullet_requires_increment: false # Require increment for bullet challenges from bots.
+  max_simultaneous_games_per_user: 5  # Concurrent games per user.
+
+greeting:
+  # Substitutions: {opponent}, {me}. Other {...} fields are removed.
+  hello: "Hi! I'm {me}. Good luck! Type !help for a list of commands I can respond to." # Opponent greeting.
+  goodbye: "Good game!" # Opponent farewell.
+  hello_spectators: "Hi! I'm {me}. Type !help for a list of commands I can respond to." # Spectator greeting.
+  goodbye_spectators: "Thanks for watching!" # Spectator farewell.
+
+# pgn_directory: "game_records"    # PGN directory.
+# pgn_file_grouping: "game"        # "game", "opponent", "all".
+                                   # game: "{White name} vs. {Black name} - {lichess game ID}.pgn" (default)
+                                   # opponent: "{Bot name} games vs. {Opponent name}.pgn"
+                                   # all: "{Bot name} games.pgn"
+
+matchmaking:
+  allow_matchmaking: false         # Challenge other bots.
+  allow_during_games: false        # Challenge during long games.
+  challenge_variant: "random"      # "random" chooses from challenge.variants.
+  challenge_timeout: 30            # Idle minutes before challenging; minimum 1.
+  challenge_initial_time:          # Initial seconds, chosen randomly.
+    - 60
+    - 180
+  challenge_increment:             # Increment seconds, chosen randomly.
+    - 1
+    - 2
+#  challenge_days:                 # Days per move, chosen randomly.
+#    - 1
+#    - 2
+# opponent_min_rating: 600         # Minimum opponent rating.
+# opponent_max_rating: 4000        # Maximum opponent rating.
+  opponent_rating_difference: 300  # Maximum rating difference.
+  rating_preference: "none"        # "none", "high", "low".
+  challenge_mode: "random"         # "casual", "rated", "random".
+  challenge_filter: none           # Avoid repeated declined challenges: "none", "coarse", "fine".
+# block_list:                      # Blocked users.
+#   - user1
+#   - user2
+# online_block_list:               # URLs of blocklists; one username per line.
+#   - example.com/blocklist
+  include_challenge_block_list: false  # Also use challenge.block_list and challenge.online_block_list.
+#  challenge_decliner_file_name:   # Persist declined challenges here; relative paths use the current directory.
+
+# overrides:                       # Choose randomly between defaults and these overrides.
+#   bullet_only_horde:             # Unique override name.
+#     challenge_variant: "horde"   # Unspecified options inherit defaults.
+#     challenge_initial_time:
+#       - 1
+#       - 2
+#     challenge_increment:
+#       - 0
+#       - 1
+#
+#   easy_chess960:
+#     challenge_variant: "chess960"
+#     opponent_min_rating: 400
+#     opponent_max_rating: 1200
+#     opponent_rating_difference:
+#     challenge_mode: casual
+#
+#   no_pressure_correspondence:
+#     challenge_initial_time:
+#     challenge_increment:
+#     challenge_days:
+#       - 2
+#       - 3
+#     challenge_mode: casual
+#
+# Cannot override: allow_matchmaking, challenge_timeout, challenge_filter, block_list.
+
+# Optional transport settings.
+# c_bridge:
+#   http_timeout_ms: 3000
+#   engine_timeout_ms: 5000
+#   trace: false
+#   accept_challenges: true

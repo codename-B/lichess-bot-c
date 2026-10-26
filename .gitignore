@@ -1,0 +1,48 @@
+# Build outputs (Linux, macOS, and Windows/MSYS2 .exe)
+/build/
+/lichess-bot-c
+/lbc-xboard
+/lbc-homemade
+/*.exe
+*.o
+*.d
+*.a
+*.so
+*.dylib
+*.dll
+
+# Credentials and local configuration
+/config.yml
+/config.yaml
+config.local.*
+.env
+.env.*
+*.key
+*.pem
+/secrets/
+
+# Local runtime data
+/engines/
+/books/
+/tablebases/
+/game_records/
+/lichess_bot_auto_logs/
+/logs/
+/data/
+*.log
+
+# Release archives
+*.zip
+*.tar
+*.tar.gz
+
+# Crash dumps, editors and OS files
+core
+core.[0-9]*
+vgcore.*
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db

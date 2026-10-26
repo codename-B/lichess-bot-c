@@ -1,0 +1,34 @@
+services:
+  lichess-bot:
+    build:
+      context: .
+      target: runtime
+      args:
+        BUILD_JOBS: "2"
+    image: lichess-bot-c:local
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 60s
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    command:
+      - --config
+      - /config/config.yml
+      - --token-file
+      - /run/secrets/lichess_token
+    secrets:
+      - lichess_token
+    volumes:
+      - ./config.yml:/config/config.yml:ro
+      - ./engines:/engines:ro
+      - ./books:/books:ro
+      - ./tablebases:/tablebases:ro
+      - bot-data:/data
+
+secrets:
+  lichess_token:
+    file: ./secrets/lichess_token
+
+volumes:
+  bot-data:
